@@ -34,9 +34,9 @@ jobs:
         run: |
           python crawl_script.py
 
-      # 5️⃣ Upload data ra artifact để tải về
+      # 5️⃣ Upload data ra artifact (dùng version mới)
       - name: Upload crawled data
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: company-data
           path: data/ho-chi-minh/
