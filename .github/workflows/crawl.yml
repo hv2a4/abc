@@ -39,13 +39,13 @@ jobs:
 
       - name: Run crawler
         env:
-          DISPLAY: ":99"
+      
         run: |
           python main.py
           python demo.py
 
       - name: Upload results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: excel-files
-          path: data/ho-chi-minh/**/*.xlsx
+          path: data/ho-chi-minh/
