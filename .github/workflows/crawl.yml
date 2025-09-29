@@ -3,7 +3,7 @@ name: Crawl Companies
 on:
   schedule:
     - cron: "0 */6 * * *"   # chạy mỗi 6 tiếng
-  workflow_dispatch:        # có thể bấm nút chạy tay
+  workflow_dispatch:
 
 jobs:
   crawl:
@@ -22,10 +22,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y tesseract-ocr unzip
-          # Cài Google Chrome
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt install -y ./google-chrome-stable_current_amd64.deb
-          # Lấy ChromeDriver cùng version
           CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
           CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
           wget "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
@@ -38,8 +36,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run crawler
-        env:
-      
         run: |
           python main.py
           python demo.py
