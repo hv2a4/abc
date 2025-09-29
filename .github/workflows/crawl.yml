@@ -31,7 +31,7 @@ jobs:
       # 4️⃣ Chạy crawler
       - name: Run crawler script
         run: |
-          python crawl_script.py
+          python main.py
 
       # 5️⃣ Upload data ra artifact (dùng version mới)
       - name: Upload crawled data
