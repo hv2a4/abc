@@ -27,8 +27,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
-
+          pip install -r .github/workflows/requirements.txt
       # 4️⃣ Chạy crawler
       - name: Run crawler script
         run: |
