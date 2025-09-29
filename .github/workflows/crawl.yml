@@ -1,47 +1,42 @@
 name: Crawl Companies
 
 on:
-  schedule:
-    - cron: "0 */6 * * *"   # chạy mỗi 6 tiếng
-  workflow_dispatch:
+  workflow_dispatch:  # cho phép chạy thủ công
 
 jobs:
   crawl:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # 1️⃣ Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      # 2️⃣ Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
+      # 3️⃣ Cài đặt Chrome, Tesseract và các thư viện Python
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y tesseract-ocr unzip
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome-stable_current_amd64.deb
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
-          wget "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          rm chromedriver_linux64.zip
-          python -m pip install --upgrade pip
+          sudo apt-get install -y chromium tesseract-ocr
 
       - name: Install Python dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run crawler
         run: |
-          python main.py
-          python demo.py
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Upload results
-        uses: actions/upload-artifact@v4
+      # 4️⃣ Chạy crawler
+      - name: Run crawler script
+        run: |
+          python crawl_script.py
+
+      # 5️⃣ Upload data ra artifact để tải về
+      - name: Upload crawled data
+        uses: actions/upload-artifact@v3
         with:
-          name: excel-files
+          name: company-data
           path: data/ho-chi-minh/
