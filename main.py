@@ -19,7 +19,7 @@ import csv
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
 chromedriver_autoinstaller.install()
-driver = webdriver.Chrome(options=chrome_options)
+
 
 # Thêm cấu hình Tesseract
 pytesseract.pytesseract.tesseract_cmd = "tesseract"
@@ -34,7 +34,7 @@ chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
 chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--disable-dev-shm-usage")
 # driver = webdriver.Chrome(service=Service("/usr/local/bin/chromedriver"), options=chrome_options)
-
+driver = webdriver.Chrome(options=chrome_options)
 def get_company_links(driver, url):
     driver.get(url)
     links = []
