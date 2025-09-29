@@ -16,8 +16,10 @@ import concurrent.futures
 import json
 import glob
 import csv
+from selenium.webdriver.chrome.options import Options
 # Thêm cấu hình Tesseract
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = "tesseract"
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Thiết lập Chrome options
 chrome_options = Options()
@@ -25,34 +27,9 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
-class DataSaver:
-    def __init__(self, area_name):
-        self.area_name = area_name.replace('/', '_')
-        self.data_dir = f"data/ho-chi-minh/{self.area_name}"
-        os.makedirs(self.data_dir, exist_ok=True)
-        self.csv_file = os.path.join(self.data_dir, f"{self.area_name}_temp.csv")
-
-    def save_company(self, company):
-        """Lưu từng công ty vào CSV"""
-        file_exists = os.path.isfile(self.csv_file)
-        with open(self.csv_file, "a", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=company.keys())
-            if not file_exists:
-                writer.writeheader()
-            writer.writerow(company)
-
-    def export_to_excel(self, page_num):
-        """Khi xong 1 trang → chuyển CSV thành Excel"""
-        if not os.path.exists(self.csv_file):
-            return None
-        df = pd.read_csv(self.csv_file)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        excel_file = os.path.join(self.data_dir, f"companies_page{page_num}_{timestamp}.xlsx")
-        df.to_excel(excel_file, index=False)
-        print(f"Đã xuất {len(df)} công ty sang {excel_file}")
-        os.remove(self.csv_file)  # Xóa file CSV tạm sau khi export
-        return excel_file
+chrome_options.add_argument("--headless=new")
+chrome_options.add_argument("--disable-dev-shm-usage")
+driver = webdriver.Chrome(service=Service("/usr/local/bin/chromedriver"), options=chrome_options)
 
 def get_company_links(driver, url):
     driver.get(url)
@@ -170,8 +147,6 @@ def save_to_excel(companies, area_name, page_num=None):
 
 def crawl_area(driver, area_path):
     base_url = f"https://www.tratencongty.com/thanh-pho-ho-chi-minh/{area_path}"
-    saver = DataSaver(area_path)
-
     # Đọc checkpoint
     start_page = get_start_page_from_files(area_path)
     print(f"Bắt đầu crawl {area_path} từ trang {start_page}")
